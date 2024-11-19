@@ -129,7 +129,7 @@ def alert(msg):
 
 if __name__ == "__main__": # execute logic if run directly
     _root = Tk() # instantiate instance of Tk class
-    _root.title('SEO SCRAPE APP')
+    _root.title('Acoustic Modeling')
     _mainframe = ttk.Frame(_root, padding='5 5 5 5 ') # root is parent of frame
     _mainframe.grid(row=0, column=0, sticky=("E", "W", "N", "S")) # placed on first row,col of parent
     # frame can extend itself in all cardinal directions
