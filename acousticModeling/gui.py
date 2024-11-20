@@ -13,7 +13,6 @@ import wave
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot
 def plot_sound():
     time = np.linspace(0., length, data.shape[0])
     plt.plot(time, data[:, 0], label="Left channel")
