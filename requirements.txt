@@ -11,3 +11,5 @@ SciPy
 Matplotlib
 NumPy
 LibRosa
+pydub
+ffmpeg
