@@ -6,6 +6,21 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 import requests
 
+from scipy.io import wavfile
+import scipy.io
+import wave
+
+import matplotlib.pyplot as plt
+import numpy as np
+def plot
+time = np.linspace(0., length, data.shape[0])
+plt.plot(time, data[:, 0], label="Left channel")
+plt.plot(time, data[:, 1], label="Right channel")
+plt.legend()
+plt.xlabel("Time [s]")
+plt.ylabel("Amplitude")
+plt.show()
+
 config = {}
 
 def fetch_url():
@@ -126,6 +141,14 @@ def sb(msg):
 def alert(msg):
     messagebox.showinfo(message=msg)
 
+def audioFileProcess():
+    wav_fname = '16bit2chan.wav'
+    samplerate, data = wavfile.read(wav_fname)
+    print(f"number of channels = {data.shape[len(data.shape) - 1]}")
+    print(f'this is data shape {data.shape}')
+    print(f"sample rate = {samplerate}Hz")
+    length = data.shape[0] / samplerate
+    print(f"length = {length}s")
 
 if __name__ == "__main__": # execute logic if run directly
     _root = Tk() # instantiate instance of Tk class
