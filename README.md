@@ -1,19 +1,4 @@
-among us among us among us among us among us among us
+describing the project, why it exists, and basic usage instructions. Plain
+text or markdown
 
-crazy?
-i was crazy once
-they locked me in a room
-a rubber room
-a rubber room with rats
-and the rats made me crazy
-crazy?
-i was crazy once
-they locked me in a room
-a rubber room
-a rubber room with rats
-and the rats made me crazy
-
-:D
-
-
-May whatever god is up there help us all
+This project exists to convert recorded sound into waves and then analyze them for data analysis. this program can import files, clean them, create a visual representation, and analyze and model data. This is done using scientific calculations and data visualization tools. This program is also able to conquer the problem of voice intelligibility in enclosed spaces that can be disruptive to hearing and learning. 
