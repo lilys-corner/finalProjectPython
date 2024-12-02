@@ -1,4 +1,3 @@
-'''
 Required Packages 
 Prior to running this program please remember to install the following packages:
 
@@ -13,4 +12,3 @@ NumPy
 LibRosa
 pydub
 ffmpeg
-'''
