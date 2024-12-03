@@ -4,11 +4,39 @@ import base64
 import json
 from pathlib import Path
 from bs4 import BeautifulSoup
+from scipy.io import wavfile
+from scipy.signal import butter, filtfilt
 import requests
-
+from os import path
+from pydub import AudioSegment
+from pydub.playback import play
 
 
 config = {}
+
+#probably would need for it to take in a file name instead
+#of the file name (src) being built into the function
+def convertMp3_wav():
+    #convert from mp3 to wav
+    src = "ourRecordingMP3.mp3"
+    dst = "convertedOurRecordingWAV.wav"
+
+    # convert wav to mp3
+    sound = AudioSegment.from_mp3(src)
+    sound.export(dst, format="wav")
+
+    sound = AudioSegment.from_mp3(src)
+
+def dataFromWav():
+    #get data from wavs
+    wav_fname = '16bit2chan.wav'
+    samplerate, data = wavfile.read(wav_fname)
+    print(f"number of channels = {data.shape[len(data.shape) - 1]}")
+    print(f'this is data shape {data.shape}')
+    print(f"sample rate = {samplerate}Hz")
+    length = data.shape[0] / samplerate
+    print(f"length = {length}s")
+
 
 def fetch_url():
     url = _url.get()
@@ -41,85 +69,6 @@ def fetch_images(soup, base_url):
         name = img_url.split('/')[-1]
         images.append(dict(name=name, url=img_url))
     return images
-
-#ADDED TITLE FUNCTION START
-def fetch_title():
-    url= _url.get()
-    try:
-        page = requests.get(url)
-    except requests.RequestException as err:
-        sb(str(err))
-    else:
-        soup = BeautifulSoup(page.content, 'html.parser')
-        title_tag = soup.find('title')
-        if title_tag:
-            title = title_tag.text
-            config['title'] = title
-            sb(f'Title: {title}')
-        else:
-            sb('No title found')
-#ADDED TITLE FUNCTION END
-
-#ADDED LINKS FUNCTION START
-def fetch_links():
-    url= _url.get()
-    try:
-        page = requests.get(url)
-    except requests.RequestException as err:
-        sb(str(err))
-    else:
-        links = []
-        soup = BeautifulSoup(page.content, 'html.parser')
-        base_domain = url.split('/')[2]
-        for a in soup.findAll('a', href = True):
-            href = a['href']
-            if href.startswith(('http://', 'https://')) and base_domain not in href:
-                links.append(href)
-        if links:
-            _images.set(tuple(links))
-            sb('Links found: {}'.format(len(links)))
-        else:
-            sb('No links found')
-#ADDED LINKS FUNCTION END
-
-def save():
-    if not config.get('images'):
-        alert('No images to save')
-        return
-
-    if _save_method.get() == 'img':
-        dirname = filedialog.askdirectory(mustexist=True)
-        save_images(dirname)
-    else:
-        filename = filedialog.asksaveasfilename(
-            initialfile='images.json',
-            filetypes=[('JSON', '.json')])
-        save_json(filename)
-
-
-def save_images(dirname):
-    if dirname and config.get('images'):
-        for img in config['images']:
-            img_data = requests.get(img['url']).content
-            filename = Path(dirname).joinpath(img['name'])
-            with open(filename, 'wb') as f:
-                f.write(img_data)
-        alert('Done')
-
-
-def save_json(filename):
-    if filename and config.get('images'):
-        data = {}
-        for img in config['images']:
-            img_data = requests.get(img['url']).content
-            b64_img_data = base64.b64encode(img_data)
-            str_img_data = b64_img_data.decode('utf-8')
-            data[img['name']] = str_img_data
-
-        with open(filename, 'w') as ijson:
-            ijson.write(json.dumps(data))
-        alert('Done')
-
 
 def sb(msg):
     _status_msg.set(msg)
