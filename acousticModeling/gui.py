@@ -37,6 +37,34 @@ def dataFromWav():
     length = data.shape[0] / samplerate
     print(f"length = {length}s")
 
+## MIGHT work. I can't get ffmpeg to work so this is just throwing me an error and I can't test it yet
+def open_file():
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        # Do something with the selected file path
+        nameOfFile = file_path.split('/')[-1]
+        print(nameOfFile) #   debugging ##
+        
+        fileType = nameOfFile.split('.')[-1]
+        if fileType == 'wav':
+            _status_msg.set(f'File opened: {nameOfFile}')
+            readTheFile(nameOfFile)
+        elif fileType == 'mp3':
+            src = nameOfFile
+            dst = "new_wav.wav"
+            
+            # convert wav to mp3
+            sound = AudioSegment.from_mp3(src)
+            sound.export(dst, format="wav")
+            sound = AudioSegment.from_mp3(src)
+            
+            print("Done!") #   debugging ##
+            _status_msg.set(f'File opened: {nameOfFile}')
+            readTheFile(dst)
+        else:
+            # error, do not proceed with the operation
+            _status_msg.set('ERROR: Wrong file type! Only .wav and .mp3 are supported')
+
 
 def fetch_url():
     url = _url.get()
