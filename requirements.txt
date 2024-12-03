@@ -1,5 +1,4 @@
-Required Packages
-
+Required Packages 
 Prior to running this program please remember to install the following packages:
 
 Format it as such in your terminal:
