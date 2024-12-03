@@ -10,7 +10,7 @@ import requests
 from os import path
 from pydub import AudioSegment
 from pydub.playback import play
-
+from ffmpeg import *
 
 config = {}
 

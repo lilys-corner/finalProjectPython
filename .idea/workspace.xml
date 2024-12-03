@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7598f2d0-7482-4859-9219-b4eebb52cf88" name="Changes" comment="added given code?">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/acousticModeling/gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/acousticModeling/gui.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +62,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "org.jetbrains.plugins.github.ui.GithubSettingsConfigurable",
+    "settings.editor.selected.configurable": "com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -91,7 +92,7 @@
       <workItem from="1732134859610" duration="48000" />
       <workItem from="1732240228552" duration="22000" />
       <workItem from="1732240380944" duration="632000" />
-      <workItem from="1732318066738" duration="14469000" />
+      <workItem from="1732318066738" duration="16510000" />
     </task>
     <task id="LOCAL-00001" summary="First test">
       <option name="closed" value="true" />
@@ -149,7 +150,23 @@
       <option name="project" value="LOCAL" />
       <updated>1732134729156</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="added given code?">
+      <option name="closed" value="true" />
+      <created>1733184055828</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1733184055828</updated>
+    </task>
+    <task id="LOCAL-00009" summary="added given code?">
+      <option name="closed" value="true" />
+      <created>1733184329589</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1733184329589</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,18 +201,8 @@
     <MESSAGE value="added given code?" />
     <option name="LAST_COMMIT_MESSAGE" value="added given code?" />
   </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/acousticModeling/gui.py</url>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/finalProjectPython$testing.coverage" NAME="testing Coverage Results" MODIFIED="1732320089579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Test" />
-    <SUITE FILE_PATH="coverage/finalProjectPython$gui.coverage" NAME="gui Coverage Results" MODIFIED="1732134869958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/acousticModeling" />
+    <SUITE FILE_PATH="coverage/finalProjectPython$gui.coverage" NAME="gui Coverage Results" MODIFIED="1733184712258" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/acousticModeling" />
   </component>
 </project>
