@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk,filedialog,messagebox
+from tkinter import ttk, filedialog, messagebox
 import base64
 import json
 from pathlib import Path
@@ -13,10 +13,14 @@ from pydub import AudioSegment
 from pydub.playback import play
 
 # It can do the GUI and read the file. It can tell if it's an MP3 or a WAV, although I have yet to test that because my PyCharm is being a poo with ffmpeg
-# It's having trouble graphing the 2 channel. Dunno why. The 1 channel is fine. I'm working on the process function and connecting it to the functions I
+# It's having trouble graphing the 2 channel. Dunno why. The 1 channel is fine.
+# I'm working on the process function and connecting it to the functions I
 #  pulled from the class's google collab
 
+#Lily: Fixed up the 2 channel graphing, it should be working now. GUI still works. 
+
 config = {}
+
 
 ## MAIN PROCESS. Because I am too lazy to go through connecting everything. There are some functions called though.
 def process(input_file, sample_rate, data):
@@ -65,12 +69,12 @@ def bandpass_filter(data, lowcut, highcut, fs, order=4):
     b, a = butter(order, [low, high], btype='band')
     return filtfilt(b, a, data)
 
+
 def readTheFile(filename):
     sample_rate, data = wavfile.read(filename)
     print(sample_rate, data)
     print("Calling process now!")
     process(filename, sample_rate, data)
-
 
 
 def splitChannelsAndCombine(data, sample_rate):
@@ -87,8 +91,8 @@ def splitChannelsAndCombine(data, sample_rate):
         time = np.linspace(0., length, data.shape[0])
         plt.figure(1)
         plt.title('Waveform')
-        plt.plot(time, data[:, 0], label="Left channel")
-        plt.plot(time, data[:, 1], label="Right channel")
+        plt.plot(time, left_channel, label="Left channel")
+        plt.plot(time, right_channel, label="Right channel")
         plt.legend()
         plt.xlabel("Time [s]")
         plt.ylabel("Amplitude")
@@ -99,7 +103,7 @@ def splitChannelsAndCombine(data, sample_rate):
         print("One channel")
         # Mono audio, no change needed
         data = data
-        sample_rate, data = wavfile.read('16bit1chan.wav')
+        #sample_rate, data = wavfile.read('16bit1chan.wav')
         spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap('autumn_r'))
         plt.figure(1)
         cbar = plt.colorbar(im)
@@ -109,27 +113,31 @@ def splitChannelsAndCombine(data, sample_rate):
         plt.show()
         return data
 
+
 # Calculate the Fourier Transform of the signal
 def fourierTransform(data, sample_rate):
     fft_result = np.fft.fft(data)
     spectrum = np.abs(fft_result)  # Get magnitude spectrum
-    freqs = np.fft.fftfreq(len(data), d=1/sample_rate)
+    freqs = np.fft.fftfreq(len(data), d=1 / sample_rate)
 
     # Use only positive frequencies
-    freqs = freqs[:len(freqs)//2]
-    spectrum = spectrum[:len(spectrum)//2]
+    freqs = freqs[:len(freqs) // 2]
+    spectrum = spectrum[:len(spectrum) // 2]
     return spectrum, freqs
+
 
 # Find the target frequency closest to 1000 Hz
 def find_target_frequency(freqs, target=1000):
     nearest_freq = freqs[np.abs(freqs - target).argmin()]
     return nearest_freq
 
+
 # Function to find the nearest value in the array
 def find_nearest_value(array, value):
     array = np.asarray(array)
     idx = (np.abs(array - value)).argmin()
     return array[idx]
+
 
 def dBAndRT60(sliced_array, value_of_max_less_5, data_in_db, value_of_max, t):
     # Find the nearest value for max-5dB and its index
@@ -152,7 +160,6 @@ def dBAndRT60(sliced_array, value_of_max_less_5, data_in_db, value_of_max, t):
     plt.show()
 
     return rt60
-
 
 
 # get a da file!
@@ -189,13 +196,14 @@ def open_file():
             # error
             _status_msg.set('ERROR: Wrong file type! Only .wav and .mp3 are supported')
 
-if __name__ == "__main__": # execute logic if run directly
-    _root = Tk() # instantiate instance of Tk class
+
+if __name__ == "__main__":  # execute logic if run directly
+    _root = Tk()  # instantiate instance of Tk class
     _root.title('Acoustic Modeling')
 
     # THIS IS THE TOP BAR OF CLOSE AND MAXIMIZE/MINIMIZE, AND THE TITLE
-    _mainframe = ttk.Frame(_root, padding='5 5 5 5 ') # root is parent of frame
-    _mainframe.grid(row=0, column=0, sticky=("E", "W", "N", "S")) # placed on first row,col of parent
+    _mainframe = ttk.Frame(_root, padding='5 5 5 5 ')  # root is parent of frame
+    _mainframe.grid(row=0, column=0, sticky=("E", "W", "N", "S"))  # placed on first row,col of parent
     # frame can extend itself in all cardinal directions
 
     # THIS CREATES A WINDOW THAT FITS TO WHATEVER IS ON IT
@@ -204,7 +212,6 @@ if __name__ == "__main__": # execute logic if run directly
     _window_frame.grid(row=0, column=0, sticky=("E", "W"))  # only expands E W
     _window_frame.columnconfigure(0, weight=1)
     _window_frame.rowconfigure(0, weight=1)  # behaves when resizing
-
 
     '''
     ####### IMPORT DATA MAIN FUNCTION (CALL COMMAND)
@@ -215,9 +222,6 @@ if __name__ == "__main__": # execute logic if run directly
     _window_entry = ttk.Entry(
         _window_frame, width=40, textvariable=_window)  # text box
     _window_entry.grid(row=0, column=0, sticky=(E, W, S, N), padx=5)'''
-
-
-
 
     # BUTTON TO THE RIGHT OF THE TEXT BOX TO INITIATE A COMMAND THAT FINDS THE FILE IN THE TEXT BOX
     # FILE MUST BE IN THE SAME DIRECTORY
@@ -255,28 +259,27 @@ if __name__ == "__main__": # execute logic if run directly
 
     # Graphs!
 
-
     '''
     # SCROLLBAR, DELETE at the end if it's redundant
     _scrollbar = ttk.Scrollbar(
         _analysis_frame, orient=VERTICAL, command=_analysis_listbox.yview)
     _scrollbar.grid(row=0, column=1, sticky=(S, N), pady=6)
     _analysis_listbox.configure(yscrollcommand=_scrollbar.set)'''
-    
-    #Listbox occupies (0,0) on _analysis_frame.
+
+    # Listbox occupies (0,0) on _analysis_frame.
     # Scrollbar occupies (0,1) so _radio_frame goes to (0,2)
-    #_radio_frame = ttk.Frame(_analysis_frame)
-    #_radio_frame.grid(row=0, column=2, sticky=(N, S, W, E))
+    # _radio_frame = ttk.Frame(_analysis_frame)
+    # _radio_frame.grid(row=0, column=2, sticky=(N, S, W, E))
 
     # MESSAGE AT THE BOTTOM
     # To change the message, do _status_msg.set('INSERT TEXT HERE')
     _status_frame = ttk.Frame(
         _root, relief='sunken', padding='2 2 2 2')
     _status_frame.grid(row=1, column=0, sticky=("E", "W", "S"))
-    _status_msg = StringVar() # need modified when update status text
+    _status_msg = StringVar()  # need modified when update status text
     _status_msg.set('Insert a .wav file to start analyzing...')
-    _status= ttk.Label(
+    _status = ttk.Label(
         _status_frame, textvariable=_status_msg, anchor=W)
     _status.grid(row=0, column=0, sticky=(E, W))
 
-    _root.mainloop() # listens for events, blocks any code that comes after it
+    _root.mainloop()  # listens for events, blocks any code that comes after it
