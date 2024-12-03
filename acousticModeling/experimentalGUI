@@ -12,7 +12,9 @@ from os import path
 from pydub import AudioSegment
 from pydub.playback import play
 
-
+# It can do the GUI and read the file. It can tell if it's an MP3 or a WAV, although I have yet to test that because my PyCharm is being a poo with ffmpeg
+# It's having trouble graphing the 2 channel. Dunno why. The 1 channel is fine. I'm working on the process function and connecting it to the functions I
+#  pulled from the class's google collab
 
 config = {}
 
