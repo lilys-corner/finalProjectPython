@@ -17,13 +17,15 @@ from pydub.playback import play
 # I'm working on the process function and connecting it to the functions I
 #  pulled from the class's google collab
 
-#Lily: Fixed up the 2 channel graphing, it should be working now. GUI still works. 
+#Lily: Fixed up the 2 channel graphing, it should be working now. GUI still works.
+#lily part 2, added 2 more process lines down in the read file, might need to separate the spectrogram or at least
+#have it only appear once
 
 config = {}
 
 
 ## MAIN PROCESS. Because I am too lazy to go through connecting everything. There are some functions called though.
-def process(input_file, sample_rate, data):
+def process(input_file, sample_rate, data, target):
     # Define the time vector
     t = np.linspace(0, len(data) / sample_rate, len(data), endpoint=False)
 
@@ -34,7 +36,7 @@ def process(input_file, sample_rate, data):
     spectrum, freqs = fourierTransform(data, sample_rate)
 
     # Find the target frequency
-    target_frequency = find_target_frequency(freqs)
+    target_frequency = find_target_frequency(freqs, target)
 
     # Bandpass filter
     filtered_data = bandpass_filter(data, target_frequency - 50, target_frequency + 50, sample_rate)
@@ -74,7 +76,9 @@ def readTheFile(filename):
     sample_rate, data = wavfile.read(filename)
     print(sample_rate, data)
     print("Calling process now!")
-    process(filename, sample_rate, data)
+    process(filename, sample_rate, data, 500) #number is temporary, idk what is the low frequency
+    process(filename, sample_rate, data, 1000)#we really gotta figure out what is the target number
+    process(filename, sample_rate, data, 3000)#num also temp
 
 
 def splitChannelsAndCombine(data, sample_rate):
@@ -127,7 +131,7 @@ def fourierTransform(data, sample_rate):
 
 
 # Find the target frequency closest to 1000 Hz
-def find_target_frequency(freqs, target=1000):
+def find_target_frequency(freqs, target):
     nearest_freq = freqs[np.abs(freqs - target).argmin()]
     return nearest_freq
 
