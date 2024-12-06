@@ -1,9 +1,5 @@
 from tkinter import *
 from tkinter import ttk, filedialog, messagebox
-import base64
-import json
-from pathlib import Path
-from bs4 import BeautifulSoup
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
@@ -76,9 +72,13 @@ def readTheFile(filename):
     sample_rate, data = wavfile.read(filename)
     print(sample_rate, data)
     print("Calling process now!")
-    process(filename, sample_rate, data, 500) #number is temporary, idk what is the low frequency
-    process(filename, sample_rate, data, 1000)#we really gotta figure out what is the target number
-    process(filename, sample_rate, data, 3000)#num also temp
+    # number is temporary, idk what is the low frequency
+    #slides say 60-250hz
+    process(filename, sample_rate, data, 250)
+    # we really gotta figure out what is the target number
+    process(filename, sample_rate, data, 1000)
+    # num also temp, High freq, slides say 5-10Khz
+    process(filename, sample_rate, data, 5000)
 
 
 def splitChannelsAndCombine(data, sample_rate):
