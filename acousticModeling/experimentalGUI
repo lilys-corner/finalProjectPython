@@ -309,12 +309,11 @@ if __name__ == "__main__":  # execute logic if run directly
 
     # Graphs!
 
-    '''
-    # SCROLLBAR, DELETE at the end if it's redundant
+    # SCROLLBAR for the summary box
     _scrollbar = ttk.Scrollbar(
         _analysis_frame, orient=VERTICAL, command=_analysis_listbox.yview)
     _scrollbar.grid(row=0, column=1, sticky=(S, N), pady=6)
-    _analysis_listbox.configure(yscrollcommand=_scrollbar.set)'''
+    _analysis_listbox.configure(yscrollcommand=_scrollbar.set)
 
     # Listbox occupies (0,0) on _analysis_frame.
     # Scrollbar occupies (0,1) so _radio_frame goes to (0,2)
