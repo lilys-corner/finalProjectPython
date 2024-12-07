@@ -288,11 +288,6 @@ if __name__ == "__main__":  # execute logic if run directly
     _getfile_button.grid(row=0, column=0, sticky=E, padx=5)
     ####### END IMPORT DATA MAIN FUNCTION
 
-    _analyze_button = ttk.Button(
-        _window_frame, text='Analyze', command=open_file)
-    _analyze_button.grid(row=0, column=1, sticky=W, padx=5)
-    ####### END IMPORT DATA MAIN FUNCTION
-
     ####### CLEAN DATA IS INTERNAL FUNCTIONS, NOT GUI, BUT STILL DO IT LATER
 
     # NEW WINDOW SECTION
