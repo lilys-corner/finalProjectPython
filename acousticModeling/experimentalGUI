@@ -8,6 +8,8 @@ from os import path
 from pydub import AudioSegment
 from pydub.playback import play
 
+
+
 # It can do the GUI and read the file. It can tell if it's an MP3 or a WAV, although I have yet to test that because my PyCharm is being a poo with ffmpeg
 # It's having trouble graphing the 2 channel. Dunno why. The 1 channel is fine.
 # I'm working on the process function and connecting it to the functions I
@@ -61,6 +63,7 @@ def process(input_file, sample_rate, data, target, ifGraphed):
     # Print RT60 value
     print(f'The RT60 reverb time at freq {int(target_frequency)}Hz is {round(abs(rt60), 2)} seconds')
 
+    return rt60, target_frequency
 
 # lowcut = target frequency - 50, highcut = target frequency + 50
 def bandpass_filter(data, lowcut, highcut, fs, order=4):
@@ -70,6 +73,8 @@ def bandpass_filter(data, lowcut, highcut, fs, order=4):
     b, a = butter(order, [low, high], btype='band')
     return filtfilt(b, a, data)
 
+def add_log_entry(entry):
+    _analysis_listbox.insert(END, entry)
 
 def readTheFile(filename):
     sample_rate, data = wavfile.read(filename)
@@ -77,11 +82,21 @@ def readTheFile(filename):
     print("Calling process now!")
     # number is temporary, idk what is the low frequency
     #slides say 60-250hz
-    process(filename, sample_rate, data, 250, ifGraphed=0)
+    rt60_low, target_frequency_low = process(filename, sample_rate, data, 250, ifGraphed=0)
     # we really gotta figure out what is the target number
-    process(filename, sample_rate, data, 1000, ifGraphed=1)
+    rt60_mid, target_frequency_mid = process(filename, sample_rate, data, 1000, ifGraphed=1)
     # num also temp, High freq, slides say 5-10Khz
-    process(filename, sample_rate, data, 5000, ifGraphed=1)
+    rt60_high, target_frequency_high = process(filename, sample_rate, data, 5000, ifGraphed=1)
+
+    _summary.set([
+        f"File: {filename}",
+        f"Sample rate: {sample_rate} Hz",
+    ])
+
+    add_log_entry(f"RT60 (Low Freq): {round(abs(rt60_low), 2)} seconds at {int(target_frequency_low)} Hz")
+    add_log_entry(f"RT60 (Mid Freq): {round(abs(rt60_mid), 2)} seconds at {int(target_frequency_mid)} Hz")
+    add_log_entry(f"RT60 (High Freq): {round(abs(rt60_high), 2)} seconds at {int(target_frequency_high)} Hz")
+
 
 
 def splitChannelsAndCombine(data, sample_rate, ifGraphed):
