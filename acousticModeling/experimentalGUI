@@ -183,6 +183,7 @@ def open_file():
 
         if fileType == 'wav':
             print("wav read!")
+            _status_msg.set('Analyzing' + nameOfFile + ' now')
             readTheFile(nameOfFile)
 
         elif fileType == 'mp3':
@@ -197,6 +198,7 @@ def open_file():
 
             sound = AudioSegment.from_mp3(src)
             print("mp3 read!")
+            _status_msg.set('Analyzing' + nameOfFile + ' now')
 
             readTheFile(dst)
 
