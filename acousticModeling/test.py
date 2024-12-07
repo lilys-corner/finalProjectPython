@@ -21,7 +21,7 @@ from pydub.playback import play
 config = {}
 
 ## MAIN PROCESS. Because I am too lazy to go through connecting everything. There are some functions called though.
-def process(input_file, sample_rate, data, target, ifGraphed, ax_rt60):
+def process(input_file, sample_rate, data, target, ifGraphed):
     # Define the time vector
     t = np.linspace(0, len(data) / sample_rate, len(data), endpoint=False)
 
@@ -65,12 +65,13 @@ def process(input_file, sample_rate, data, target, ifGraphed, ax_rt60):
     rt60 = dBAndRT60(sliced_array, value_of_max_less_5, data_in_db, value_of_max, t)
     # Print RT60 value
     print(f'The RT60 reverb time at freq {int(target_frequency)}Hz is {round(abs(rt60), 2)} seconds')
-    if ax_rt60 is not None:  # If plotting on a combined axis
-        ax_rt60.plot(t, data_in_db, label=f"{target} Hz Band")
-        ax_rt60.set_title("RT60 Decibel Graphs")
-        ax_rt60.set_xlabel("Time (s)")
-        ax_rt60.set_ylabel("Power (dB)")
-        plt.show()
+    #if ax_rt60x is not None:  # If plotting on a combined axis
+    fig_rt60, ax_rt60 = plt.subplots(num="RT60 Combined", figsize=(10, 6))
+    ax_rt60.plot(t, data_in_db, label=f"{target} Hz Band")
+    ax_rt60.set_title("RT60 Decibel Graphs")
+    ax_rt60.set_xlabel("Time (s)")
+    ax_rt60.set_ylabel("Power (dB)")
+
 
     if ifGraphed == 0:
         resonant_frequency_var = resonant_frequency(data, sample_rate)
@@ -80,12 +81,12 @@ def process(input_file, sample_rate, data, target, ifGraphed, ax_rt60):
 
 
 
-        return rt60, target_frequency, resonant_frequency_var, t
+        return rt60, target_frequency, resonant_frequency_var, t, ax_rt60
 
 
 
 
-    return rt60, target_frequency, t
+    return rt60, target_frequency, t, ax_rt60
 
 
 
@@ -102,18 +103,18 @@ def add_log_entry(entry):
 
 def readTheFile(filename):
     sample_rate, data = wavfile.read(filename)
-    fig_rt60, ax_rt60 = plt.subplots(num="RT60 Combined", figsize=(10,6))
+
     print(sample_rate, data)
     print("Calling process now!")
     # number is temporary, idk what is the low frequency
     #slides say 60-250hz
-    rt60_low, target_frequency_low, resonant_freq, t = process(filename, sample_rate, data, 250, ifGraphed=0, ax_rt60=ax_rt60)
+    rt60_low, target_frequency_low, resonant_freq, t, ax_rt60 = process(filename, sample_rate, data, 250, ifGraphed=0)
     # we really gotta figure out what is the target number
-    rt60_mid, target_frequency_mid, t = process(filename, sample_rate, data, 1000, ifGraphed=1, ax_rt60=ax_rt60)
+    rt60_mid, target_frequency_mid, t, ax_rt60 = process(filename, sample_rate, data, 1000, ifGraphed=1)
     # num also temp, High freq, slides say 5-10Khz
-    rt60_high, target_frequency_high, t = process(filename, sample_rate, data, 5000, ifGraphed=1, ax_rt60=ax_rt60)
+    rt60_high, target_frequency_high, t , ax_rt60= process(filename, sample_rate, data, 5000, ifGraphed=1)
 
-    ax_rt60.legend(loc = 'best')
+    ax_rt60.legend(loc='best')
     ax_rt60.grid()
     plt.show()
 
