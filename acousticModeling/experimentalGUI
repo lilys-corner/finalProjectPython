@@ -100,7 +100,7 @@ def readTheFile(filename):
     add_log_entry(f'File: {filename}')
     add_log_entry(f'Sample rate: {sample_rate} Hz')
     add_log_entry(f'Total duration of wave in sec: {t} s')
-    add_log_entry(f'Resonant frequency: {resonant_freq}')
+    add_log_entry(f'Resonant frequency: {resonant_freq} Hz')
     add_log_entry(f"RT60 (Low Freq): {round(abs(rt60_low), 2)} seconds at {int(target_frequency_low)} Hz")
     add_log_entry(f"RT60 (Mid Freq): {round(abs(rt60_mid), 2)} seconds at {int(target_frequency_mid)} Hz")
     add_log_entry(f"RT60 (High Freq): {round(abs(rt60_high), 2)} seconds at {int(target_frequency_high)} Hz")
