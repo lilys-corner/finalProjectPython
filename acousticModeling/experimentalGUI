@@ -19,14 +19,17 @@ from pydub.playback import play
 
 config = {}
 
-
 ## MAIN PROCESS. Because I am too lazy to go through connecting everything. There are some functions called though.
-def process(input_file, sample_rate, data, target):
+def process(input_file, sample_rate, data, target, ifGraphed):
     # Define the time vector
     t = np.linspace(0, len(data) / sample_rate, len(data), endpoint=False)
 
-    # Split channels and combine channels
-    data = splitChannelsAndCombine(data, sample_rate)
+    if ifGraphed == 0:
+        # Split channels and combine channels
+        data = splitChannelsAndCombine(data, sample_rate, 0)
+    else:
+        # Split channels and combine channels
+        data = splitChannelsAndCombine(data, sample_rate, 1)
 
     # Fourier transform
     spectrum, freqs = fourierTransform(data, sample_rate)
@@ -74,14 +77,14 @@ def readTheFile(filename):
     print("Calling process now!")
     # number is temporary, idk what is the low frequency
     #slides say 60-250hz
-    process(filename, sample_rate, data, 250)
+    process(filename, sample_rate, data, 250, ifGraphed=0)
     # we really gotta figure out what is the target number
-    process(filename, sample_rate, data, 1000)
+    process(filename, sample_rate, data, 1000, ifGraphed=1)
     # num also temp, High freq, slides say 5-10Khz
-    process(filename, sample_rate, data, 5000)
+    process(filename, sample_rate, data, 5000, ifGraphed=1)
 
 
-def splitChannelsAndCombine(data, sample_rate):
+def splitChannelsAndCombine(data, sample_rate, ifGraphed):
     # Check if the audio has 2 channels
     if len(data.shape) == 2:
         print("Two channels")
@@ -91,16 +94,17 @@ def splitChannelsAndCombine(data, sample_rate):
         # Optionally, combine the channels (e.g., average)
         data = (left_channel + right_channel) / 2
 
-        length = data.shape[0] / sample_rate
-        time = np.linspace(0., length, data.shape[0])
-        plt.figure(1)
-        plt.title('Waveform')
-        plt.plot(time, left_channel, label="Left channel")
-        plt.plot(time, right_channel, label="Right channel")
-        plt.legend()
-        plt.xlabel("Time [s]")
-        plt.ylabel("Amplitude")
-        plt.show()
+        if ifGraphed == 0:
+            length = data.shape[0] / sample_rate
+            time = np.linspace(0., length, data.shape[0])
+            plt.figure(1)
+            plt.title('Waveform')
+            plt.plot(time, left_channel, label="Left channel")
+            plt.plot(time, right_channel, label="Right channel")
+            plt.legend()
+            plt.xlabel("Time [s]")
+            plt.ylabel("Amplitude")
+            plt.show()
 
         return data
     else:
@@ -108,13 +112,14 @@ def splitChannelsAndCombine(data, sample_rate):
         # Mono audio, no change needed
         data = data
         #sample_rate, data = wavfile.read('16bit1chan.wav')
-        spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap('autumn_r'))
-        plt.figure(1)
-        cbar = plt.colorbar(im)
-        plt.xlabel('Time (s)')
-        plt.ylabel('Frequency (Hz)')
-        cbar.set_label('Intensity (dB)')
-        plt.show()
+        if ifGraphed == 0:
+            spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap('autumn_r'))
+            plt.figure(1)
+            cbar = plt.colorbar(im)
+            plt.xlabel('Time (s)')
+            plt.ylabel('Frequency (Hz)')
+            cbar.set_label('Intensity (dB)')
+            plt.show()
         return data
 
 
