@@ -3,7 +3,7 @@ from tkinter import ttk, filedialog, messagebox
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
-from scipy.signal import butter, filtfilt
+from scipy.signal import butter, filtfilt, welch
 from os import path
 from pydub import AudioSegment
 from pydub.playback import play
@@ -63,7 +63,15 @@ def process(input_file, sample_rate, data, target, ifGraphed):
     # Print RT60 value
     print(f'The RT60 reverb time at freq {int(target_frequency)}Hz is {round(abs(rt60), 2)} seconds')
 
-    return rt60, target_frequency
+    if ifGraphed == 0:
+        resonant_frequency_var = resonant_frequency(data, sample_rate)
+        _summary.set(f'Total duration of wave in sec: {t} s\n'
+                     f'Resonant frequency: {resonant_frequency_var}\n'
+                     f'')
+
+        return rt60, target_frequency, resonant_frequency_var, t
+
+    return rt60, target_frequency, t
 
 # lowcut = target frequency - 50, highcut = target frequency + 50
 def bandpass_filter(data, lowcut, highcut, fs, order=4):
@@ -82,17 +90,17 @@ def readTheFile(filename):
     print("Calling process now!")
     # number is temporary, idk what is the low frequency
     #slides say 60-250hz
-    rt60_low, target_frequency_low = process(filename, sample_rate, data, 250, ifGraphed=0)
+    rt60_low, target_frequency_low, resonant_freq, t = process(filename, sample_rate, data, 250, ifGraphed=0)
     # we really gotta figure out what is the target number
-    rt60_mid, target_frequency_mid = process(filename, sample_rate, data, 1000, ifGraphed=1)
+    rt60_mid, target_frequency_mid, t = process(filename, sample_rate, data, 1000, ifGraphed=1)
     # num also temp, High freq, slides say 5-10Khz
-    rt60_high, target_frequency_high = process(filename, sample_rate, data, 5000, ifGraphed=1)
+    rt60_high, target_frequency_high, t = process(filename, sample_rate, data, 5000, ifGraphed=1)
 
-    _summary.set([
-        f"File: {filename}",
-        f"Sample rate: {sample_rate} Hz",
-    ])
-
+    _summary.set('')
+    add_log_entry(f'File: {filename}')
+    add_log_entry(f'Sample rate: {sample_rate} Hz')
+    add_log_entry(f'Total duration of wave in sec: {t} s')
+    add_log_entry(f'Resonant frequency: {resonant_freq}')
     add_log_entry(f"RT60 (Low Freq): {round(abs(rt60_low), 2)} seconds at {int(target_frequency_low)} Hz")
     add_log_entry(f"RT60 (Mid Freq): {round(abs(rt60_mid), 2)} seconds at {int(target_frequency_mid)} Hz")
     add_log_entry(f"RT60 (High Freq): {round(abs(rt60_high), 2)} seconds at {int(target_frequency_high)} Hz")
@@ -185,6 +193,27 @@ def dBAndRT60(sliced_array, value_of_max_less_5, data_in_db, value_of_max, t):
 
     return rt60
 
+
+def resonant_frequency(data, sample_rate):
+    frequencies, power = welch(data, sample_rate, nperseg=4096)
+    dominant_frequency = frequencies[np.argmax(power)]
+
+    n = len(data) # length of the signal
+    k = np.arange(n)
+    T = n/sample_rate
+    frq = k/T # two sides frequency range
+    frq = frq[:len(frq)//2] # one side frequency range
+    Y = np.fft.fft(data)/n
+    Y = Y[:n//2]
+    plt.title('Dominant Frequency')
+    plt.yscale('symlog')
+    plt.plot(frq, abs(Y)) # plot the power
+    plt.xlim(0, 1500) # limit x-axis to 1.5Khz
+    plt.xlabel('Frequency (Hz)')
+    plt.ylabel('Power')
+    plt.show()
+
+    return dominant_frequency
 
 # get a da file!
 def open_file():
