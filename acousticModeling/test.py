@@ -21,13 +21,14 @@ from pydub.playback import play
 config = {}
 
 ## MAIN PROCESS. Because I am too lazy to go through connecting everything. There are some functions called though.
-def process(input_file, sample_rate, data, target, ifGraphed):
+def process(input_file, sample_rate, data, target, ifGraphed, ax_rt60):
     # Define the time vector
     t = np.linspace(0, len(data) / sample_rate, len(data), endpoint=False)
 
     if ifGraphed == 0:
         # Split channels and combine channels
         data = splitChannelsAndCombine(data, sample_rate, 0)
+
     else:
         # Split channels and combine channels
         data = splitChannelsAndCombine(data, sample_rate, 1)
@@ -49,6 +50,7 @@ def process(input_file, sample_rate, data, target, ifGraphed):
     plt.plot(t, data_in_db, linewidth=1, alpha=0.7, color='#004bc6')
     plt.xlabel('Time (s)')
     plt.ylabel('Power (dB)')
+    plt.title(f'RT60 Waveform at {int(target_frequency)}')
     # Find the index of the maximum value
     index_of_max = np.argmax(data_in_db)
     value_of_max = data_in_db[index_of_max]
@@ -57,10 +59,18 @@ def process(input_file, sample_rate, data, target, ifGraphed):
     sliced_array = data_in_db[index_of_max:]
     value_of_max_less_5 = value_of_max - 5
 
+
+
     # Find peak dB, -5 dB, -25 dB. Then compute R20, then R60. Output R60 time in the GUI
     rt60 = dBAndRT60(sliced_array, value_of_max_less_5, data_in_db, value_of_max, t)
     # Print RT60 value
     print(f'The RT60 reverb time at freq {int(target_frequency)}Hz is {round(abs(rt60), 2)} seconds')
+    if ax_rt60 is not None:  # If plotting on a combined axis
+        ax_rt60.plot(t, data_in_db, label=f"{target} Hz Band")
+        ax_rt60.set_title("RT60 Decibel Graphs")
+        ax_rt60.set_xlabel("Time (s)")
+        ax_rt60.set_ylabel("Power (dB)")
+        plt.show()
 
     if ifGraphed == 0:
         resonant_frequency_var = resonant_frequency(data, sample_rate)
@@ -68,9 +78,16 @@ def process(input_file, sample_rate, data, target, ifGraphed):
                      f'Resonant frequency: {resonant_frequency_var}\n'
                      f'')
 
+
+
         return rt60, target_frequency, resonant_frequency_var, t
 
+
+
+
     return rt60, target_frequency, t
+
+
 
 # lowcut = target frequency - 50, highcut = target frequency + 50
 def bandpass_filter(data, lowcut, highcut, fs, order=4):
@@ -85,15 +102,20 @@ def add_log_entry(entry):
 
 def readTheFile(filename):
     sample_rate, data = wavfile.read(filename)
+    fig_rt60, ax_rt60 = plt.subplots(num="RT60 Combined", figsize=(10,6))
     print(sample_rate, data)
     print("Calling process now!")
     # number is temporary, idk what is the low frequency
     #slides say 60-250hz
-    rt60_low, target_frequency_low, resonant_freq, t = process(filename, sample_rate, data, 250, ifGraphed=0)
+    rt60_low, target_frequency_low, resonant_freq, t = process(filename, sample_rate, data, 250, ifGraphed=0, ax_rt60=ax_rt60)
     # we really gotta figure out what is the target number
-    rt60_mid, target_frequency_mid, t = process(filename, sample_rate, data, 1000, ifGraphed=1)
+    rt60_mid, target_frequency_mid, t = process(filename, sample_rate, data, 1000, ifGraphed=1, ax_rt60=ax_rt60)
     # num also temp, High freq, slides say 5-10Khz
-    rt60_high, target_frequency_high, t = process(filename, sample_rate, data, 5000, ifGraphed=1)
+    rt60_high, target_frequency_high, t = process(filename, sample_rate, data, 5000, ifGraphed=1, ax_rt60=ax_rt60)
+
+    ax_rt60.legend(loc = 'best')
+    ax_rt60.grid()
+    plt.show()
 
     _summary.set('')
     add_log_entry(f'File: {filename}')
@@ -126,6 +148,7 @@ def splitChannelsAndCombine(data, sample_rate, ifGraphed):
             plt.legend()
             plt.xlabel("Time [s]")
             plt.ylabel("Amplitude")
+            plt.title('Two Channel Waveform')
             plt.show()
 
         return data
@@ -135,12 +158,25 @@ def splitChannelsAndCombine(data, sample_rate, ifGraphed):
         data = data
         #sample_rate, data = wavfile.read('16bit1chan.wav')
         if ifGraphed == 0:
+            length = data.shape[0] / sample_rate
+            time = np.linspace(0., length, data.shape[0])
             spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap('autumn_r'))
             plt.figure(1)
             cbar = plt.colorbar(im)
             plt.xlabel('Time (s)')
             plt.ylabel('Frequency (Hz)')
             cbar.set_label('Intensity (dB)')
+            plt.title('Spectrogram')
+            plt.show()
+
+
+            plt.figure(num="Mono Waveform")
+            plt.title('Waveform (Mono)')
+            plt.plot(time, data, label="Mono Channel", color='blue')
+            plt.legend()
+            plt.xlabel("Time [s]")
+            plt.ylabel("Amplitude")
+            plt.grid()
             plt.show()
         return data
 
@@ -213,6 +249,7 @@ def resonant_frequency(data, sample_rate):
     plt.show()
 
     return dominant_frequency
+
 
 # get a da file!
 def open_file():

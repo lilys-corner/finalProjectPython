@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7598f2d0-7482-4859-9219-b4eebb52cf88" name="Changes" comment="added given code?">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/acousticModeling/gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/acousticModeling/gui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/acousticModeling/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/acousticModeling/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +52,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.gui.executor": "Run",
+    "Python.test.executor": "Run",
     "Python.testing.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
@@ -67,6 +68,9 @@
   }
 }]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\lilli\PycharmProjects\finalProjectPython" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\lilli\PycharmProjects\finalProjectPython\acousticModeling" />
     </key>
@@ -166,7 +170,23 @@
       <option name="project" value="LOCAL" />
       <updated>1733184329589</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="copy of experimental">
+      <option name="closed" value="true" />
+      <created>1733605605207</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1733605605207</updated>
+    </task>
+    <task id="LOCAL-00011" summary="copy of experimental">
+      <option name="closed" value="true" />
+      <created>1733605658526</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1733605658526</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -199,10 +219,12 @@
     <MESSAGE value="First test" />
     <MESSAGE value="random program input (temp)" />
     <MESSAGE value="added given code?" />
-    <option name="LAST_COMMIT_MESSAGE" value="added given code?" />
+    <MESSAGE value="copy of experimental" />
+    <option name="LAST_COMMIT_MESSAGE" value="copy of experimental" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/finalProjectPython$testing.coverage" NAME="testing Coverage Results" MODIFIED="1732320089579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Test" />
+    <SUITE FILE_PATH="coverage/finalProjectPython$test.coverage" NAME="test Coverage Results" MODIFIED="1733613245373" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/acousticModeling" />
     <SUITE FILE_PATH="coverage/finalProjectPython$gui.coverage" NAME="gui Coverage Results" MODIFIED="1733184712258" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/acousticModeling" />
   </component>
 </project>
