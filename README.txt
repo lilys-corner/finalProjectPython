@@ -16,3 +16,6 @@ NumPy
 LibRosa
 pydub
 ffmpeg
+
+NOTES:
+Most of the commits are in test1 as to not disrupt the base program. (This was done before learning about history.)
