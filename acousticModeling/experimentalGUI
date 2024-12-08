@@ -8,8 +8,6 @@ from os import path
 from pydub import AudioSegment
 from pydub.playback import play
 
-
-
 # It can do the GUI and read the file. It can tell if it's an MP3 or a WAV, although I have yet to test that because my PyCharm is being a poo with ffmpeg
 # It's having trouble graphing the 2 channel. Dunno why. The 1 channel is fine.
 # I'm working on the process function and connecting it to the functions I
@@ -20,6 +18,9 @@ from pydub.playback import play
 #have it only appear once
 
 config = {}
+
+global theFileName
+theFileName = '' # current file, begins as null
 
 ## MAIN PROCESS. Because I am too lazy to go through connecting everything. There are some functions called though.
 def process(input_file, sample_rate, data, target, ifGraphed):
@@ -106,7 +107,6 @@ def readTheFile(filename):
     add_log_entry(f"RT60 (High Freq): {round(abs(rt60_high), 2)} seconds at {int(target_frequency_high)} Hz")
 
 
-
 def splitChannelsAndCombine(data, sample_rate, ifGraphed):
     # Check if the audio has 2 channels
     if len(data.shape) == 2:
@@ -130,6 +130,7 @@ def splitChannelsAndCombine(data, sample_rate, ifGraphed):
             plt.show()
 
         return data
+
     else:
         print("One channel")
         # Mono audio, no change needed
@@ -139,10 +140,12 @@ def splitChannelsAndCombine(data, sample_rate, ifGraphed):
             spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap('autumn_r'))
             plt.figure(1)
             cbar = plt.colorbar(im)
+            plt.title('Spectrogram')
             plt.xlabel('Time (s)')
             plt.ylabel('Frequency (Hz)')
             cbar.set_label('Intensity (dB)')
             plt.show()
+
         return data
 
 
@@ -187,6 +190,8 @@ def dBAndRT60(sliced_array, value_of_max_less_5, data_in_db, value_of_max, t):
     rt20 = t[index_of_max_less_5] - t[index_of_max_less_25]
     rt60 = 3 * rt20
 
+    # IMPLEMENT !! Multiple on one graph
+
     # Show plot
     plt.grid()
     plt.show()
@@ -217,39 +222,48 @@ def resonant_frequency(data, sample_rate):
 
 # get a da file!
 def open_file():
-    file_path = filedialog.askopenfilename()
-    if file_path:
-        # Do something with the selected file path
-        nameOfFile = file_path.split('/')[-1]
-        print(nameOfFile)
-
-        fileType = nameOfFile.split('.')[-1]
-
-        if fileType == 'wav':
-            print("wav read!")
-            _status_msg.set('Analyzing' + nameOfFile + ' now')
-            readTheFile(nameOfFile)
-
-        elif fileType == 'mp3':
-
-            src = nameOfFile
-            dst = "new_wav.wav"
-
-            # convert wav to mp3
-            # convert wav to mp3
-            sound = AudioSegment.from_mp3(src)
-            sound.export(dst, format="wav")
-
-            sound = AudioSegment.from_mp3(src)
-            print("mp3 read!")
-            _status_msg.set('Analyzing' + nameOfFile + ' now')
-
-            readTheFile(dst)
+    global theFileName
+    theFileName = filedialog.askopenfilename()
+    file_conversion(theFileName)
 
 
-        else:
-            # error
-            _status_msg.set('ERROR: Wrong file type! Only .wav and .mp3 are supported')
+def file_conversion(file_path):
+    # Do something with the selected file path
+    nameOfFile = file_path.split('/')[-1]
+    print(nameOfFile)
+
+    fileType = nameOfFile.split('.')[-1]
+
+    if fileType == 'wav':
+        print("wav read!")
+        _status_msg.set('Analyzing' + nameOfFile + ' now')
+        readTheFile(nameOfFile)
+
+    elif fileType == 'mp3':
+
+        src = nameOfFile
+        dst = "new_wav.wav"
+
+        # convert wav to mp3
+        # convert wav to mp3
+        sound = AudioSegment.from_mp3(src)
+        sound.export(dst, format="wav")
+
+        sound = AudioSegment.from_mp3(src)
+        print("mp3 read!")
+        _status_msg.set('Analyzing' + nameOfFile + ' now')
+
+        readTheFile(dst)
+
+    else:
+        # error
+        _status_msg.set('ERROR: Wrong file type! Only .wav and .mp3 are supported')
+
+def combine_RT60():
+    if theFileName != '':
+        return
+    else:
+        _status_msg.set('ERROR: No file selected for the Combine RT60 operation')
 
 
 if __name__ == "__main__":  # execute logic if run directly
@@ -284,9 +298,13 @@ if __name__ == "__main__":  # execute logic if run directly
     _getfile_button = ttk.Button(
         _window_frame, text='Get file', command=open_file)  # create button, MAKE A COMMAND LATER FOR FINDING THE FILE
     # fetch_window() is callback for button press
-
     _getfile_button.grid(row=0, column=0, sticky=E, padx=5)
     ####### END IMPORT DATA MAIN FUNCTION
+
+    _combine_button = ttk.Button(
+        _window_frame, text='Combine RT60 graphs', command=combine_RT60)  # create button, MAKE A COMMAND LATER FOR FINDING THE FILE
+    # fetch_window() is callback for button press
+    _combine_button.grid(row=0, column=1, sticky=E, padx=5)
 
     ####### CLEAN DATA IS INTERNAL FUNCTIONS, NOT GUI, BUT STILL DO IT LATER
 
@@ -309,7 +327,8 @@ if __name__ == "__main__":  # execute logic if run directly
 
     # Graphs!
 
-    # SCROLLBAR for the summary box
+
+    # SCROLLBAR, DELETE at the end if it's redundant
     _scrollbar = ttk.Scrollbar(
         _analysis_frame, orient=VERTICAL, command=_analysis_listbox.yview)
     _scrollbar.grid(row=0, column=1, sticky=(S, N), pady=6)
