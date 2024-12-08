@@ -4,9 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
 from scipy.signal import butter, filtfilt, welch
-from os import path
 from pydub import AudioSegment
-from pydub.playback import play
 
 config = {}
 
@@ -53,8 +51,6 @@ def process(input_file, sample_rate, data, target, ifGraphed):
 
     # Find peak dB, -5 dB, -25 dB. Then compute R20, then R60. Output R60 time in the GUI
     rt60 = dBAndRT60(sliced_array, value_of_max_less_5, data_in_db, value_of_max, t)
-    # Print RT60 value
-    print(f'The RT60 reverb time at freq {int(target_frequency)}Hz is {round(abs(rt60), 2)} seconds')
 
     if ifGraphed == 0:
         resonant_frequency_var = resonant_frequency(data, sample_rate)
@@ -79,16 +75,15 @@ def add_log_entry(entry):
 
 def readTheFile(filename):
     sample_rate, data = wavfile.read(filename)
-    print(sample_rate, data)
-    print("Calling process now!")
-    # number is temporary, idk what is the low frequency
-    #slides say 60-250hz
+
+    #low
     rt60_low, target_frequency_low, resonant_freq, t = process(filename, sample_rate, data, 250, ifGraphed=0)
-    # we really gotta figure out what is the target number
+    #mid
     rt60_mid, target_frequency_mid, t = process(filename, sample_rate, data, 1000, ifGraphed=1)
-    # num also temp, High freq, slides say 5-10Khz
+    #high
     rt60_high, target_frequency_high, t = process(filename, sample_rate, data, 5000, ifGraphed=1)
 
+    #update the summary listbox
     _summary.set('')
     add_log_entry(f'File: {filename}')
     add_log_entry(f'Sample rate: {sample_rate} Hz')
@@ -192,8 +187,6 @@ def dBAndRT60(sliced_array, value_of_max_less_5, data_in_db, value_of_max, t):
     rt20 = t[index_of_max_less_5] - t[index_of_max_less_25]
     rt60 = 3 * rt20
 
-    # IMPLEMENT !! Multiple on one graph
-
     # Show plot
     plt.grid()
     plt.show()
@@ -232,13 +225,11 @@ def open_file():
 def file_conversion(file_path):
     # Do something with the selected file path
     nameOfFile = file_path.split('/')[-1]
-    print(nameOfFile)
 
     fileType = nameOfFile.split('.')[-1]
 
     if fileType == 'wav':
-        print("wav read!")
-        _status_msg.set('Analyzing' + nameOfFile + ' now')
+        _status_msg.set('Analyzing ' + nameOfFile + ' now')
         readTheFile(nameOfFile)
 
     elif fileType == 'mp3':
@@ -252,8 +243,7 @@ def file_conversion(file_path):
         sound.export(dst, format="wav")
 
         sound = AudioSegment.from_mp3(src)
-        print("mp3 read!")
-        _status_msg.set('Analyzing' + nameOfFile + ' now')
+        _status_msg.set('Analyzing ' + nameOfFile + ' now')
 
         readTheFile(dst)
 
@@ -319,11 +309,6 @@ if __name__ == "__main__":  # execute logic if run directly
         _analysis_frame, orient=VERTICAL, command=_analysis_listbox.yview)
     _scrollbar.grid(row=0, column=1, sticky=(S, N), pady=6)
     _analysis_listbox.configure(yscrollcommand=_scrollbar.set)
-
-    # Listbox occupies (0,0) on _analysis_frame.
-    # Scrollbar occupies (0,1) so _radio_frame goes to (0,2)
-    # _radio_frame = ttk.Frame(_analysis_frame)
-    # _radio_frame.grid(row=0, column=2, sticky=(N, S, W, E))
 
     # MESSAGE AT THE BOTTOM
     # To change the message, do _status_msg.set('INSERT TEXT HERE')
