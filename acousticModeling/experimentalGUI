@@ -13,7 +13,7 @@ config = {}
 global theFileName
 theFileName = '' # current file, begins as null
 
-## MAIN PROCESS. Because I am too lazy to go through connecting everything. There are some functions called though.
+## MAIN PROCESS
 def process(input_file, sample_rate, data, target, ifGraphed):
     # Define the time vector
     t = np.linspace(0, len(data) / sample_rate, len(data), endpoint=False)
@@ -284,16 +284,6 @@ if __name__ == "__main__":  # execute logic if run directly
     _window_frame.columnconfigure(0, weight=1)
     _window_frame.rowconfigure(0, weight=1)  # behaves when resizing
 
-    '''
-    ####### IMPORT DATA MAIN FUNCTION (CALL COMMAND)
-    # NO FUNCTIONALITY YET
-    # CREATES SMALL TEXT BOX
-    _window = StringVar()
-    _window.set('')  # sets initial value of _window (it is blank)
-    _window_entry = ttk.Entry(
-        _window_frame, width=40, textvariable=_window)  # text box
-    _window_entry.grid(row=0, column=0, sticky=(E, W, S, N), padx=5)'''
-
     # BUTTON TO THE RIGHT OF THE TEXT BOX TO INITIATE A COMMAND THAT FINDS THE FILE IN THE TEXT BOX
     # FILE MUST BE IN THE SAME DIRECTORY
     # grid mgr places object at position
@@ -307,8 +297,6 @@ if __name__ == "__main__":  # execute logic if run directly
         _window_frame, text='Combine RT60 graphs', command=combine_RT60)  # create button, MAKE A COMMAND LATER FOR FINDING THE FILE
     # fetch_window() is callback for button press
     _combine_button.grid(row=0, column=1, sticky=E, padx=5)
-
-    ####### CLEAN DATA IS INTERNAL FUNCTIONS, NOT GUI, BUT STILL DO IT LATER
 
     # NEW WINDOW SECTION
     # analysis_frame contains Listbox and Radio Frame
