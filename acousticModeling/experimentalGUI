@@ -8,15 +8,6 @@ from os import path
 from pydub import AudioSegment
 from pydub.playback import play
 
-# It can do the GUI and read the file. It can tell if it's an MP3 or a WAV, although I have yet to test that because my PyCharm is being a poo with ffmpeg
-# It's having trouble graphing the 2 channel. Dunno why. The 1 channel is fine.
-# I'm working on the process function and connecting it to the functions I
-#  pulled from the class's google collab
-
-#Lily: Fixed up the 2 channel graphing, it should be working now. GUI still works.
-#lily part 2, added 2 more process lines down in the read file, might need to separate the spectrogram or at least
-#have it only appear once
-
 config = {}
 
 global theFileName
@@ -49,6 +40,7 @@ def process(input_file, sample_rate, data, target, ifGraphed):
     # Plot the filtered signal in decibel scale
     plt.figure(2)
     plt.plot(t, data_in_db, linewidth=1, alpha=0.7, color='#004bc6')
+    plt.title(f'RT60 Waveform at {int(target_frequency)}')
     plt.xlabel('Time (s)')
     plt.ylabel('Power (dB)')
     # Find the index of the maximum value
@@ -113,7 +105,6 @@ def readTheFile(filename):
 def splitChannelsAndCombine(data, sample_rate, ifGraphed):
     # Check if the audio has 2 channels
     if len(data.shape) == 2:
-        print("Two channels")
         # Split into left and right channels
         left_channel = data[:, 0]
         right_channel = data[:, 1]
@@ -124,7 +115,7 @@ def splitChannelsAndCombine(data, sample_rate, ifGraphed):
             length = data.shape[0] / sample_rate
             time = np.linspace(0., length, data.shape[0])
             plt.figure(1)
-            plt.title('Waveform')
+            plt.title('Two Channel Waveform')
             plt.plot(time, left_channel, label="Left channel")
             plt.plot(time, right_channel, label="Right channel")
             plt.legend()
@@ -135,10 +126,8 @@ def splitChannelsAndCombine(data, sample_rate, ifGraphed):
         return data
 
     else:
-        print("One channel")
         # Mono audio, no change needed
         data = data
-        #sample_rate, data = wavfile.read('16bit1chan.wav')
         if ifGraphed == 0:
             spectrum, freqs, t, im = plt.specgram(data, Fs=sample_rate, NFFT=1024, cmap=plt.get_cmap('autumn_r'))
             plt.figure(1)
@@ -152,7 +141,7 @@ def splitChannelsAndCombine(data, sample_rate, ifGraphed):
             length = data.shape[0] / sample_rate
             time = np.linspace(0., length, data.shape[0])
             plt.figure(2)
-            plt.title('Waveform')
+            plt.title('Mono Waveform')
             plt.plot(time, data)
             plt.xlabel("Time [s]")
             plt.ylabel("Amplitude")
