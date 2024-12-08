@@ -105,7 +105,9 @@ def readTheFile(filename):
     add_log_entry(f"RT60 (Low Freq): {round(abs(rt60_low), 2)} seconds at {int(target_frequency_low)} Hz")
     add_log_entry(f"RT60 (Mid Freq): {round(abs(rt60_mid), 2)} seconds at {int(target_frequency_mid)} Hz")
     add_log_entry(f"RT60 (High Freq): {round(abs(rt60_high), 2)} seconds at {int(target_frequency_high)} Hz")
-
+    rt60_avg = (rt60_low + rt60_mid + rt60_high) / 3
+        rt60_avg_diff = rt60_avg - 0.5
+        add_log_entry(f"RT60 Difference: {round(abs(rt60_avg_diff), 2)} seconds")
 
 def splitChannelsAndCombine(data, sample_rate, ifGraphed):
     # Check if the audio has 2 channels
