@@ -8,11 +8,11 @@ Prior to running this program please remember to install the following packages:
 Format it as such in your terminal:
 pip install [package name]
 
-tkinter
-Pandas
-SciPy
-Matplotlib
-NumPy
-LibRosa
-pydub
-ffmpeg
+tkinter,
+Pandas,
+SciPy,
+Matplotlib,
+NumPy,
+LibRosa,
+pydub,
+ffmpeg,
