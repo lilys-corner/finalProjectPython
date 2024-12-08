@@ -66,20 +66,17 @@ def process(input_file, sample_rate, data, target, ifGraphed):
     # Print RT60 value
     print(f'The RT60 reverb time at freq {int(target_frequency)}Hz is {round(abs(rt60), 2)} seconds')
     #if ax_rt60x is not None:  # If plotting on a combined axis
+
     fig_rt60, ax_rt60 = plt.subplots(num="RT60 Combined", figsize=(10, 6))
     ax_rt60.plot(t, data_in_db, label=f"{target} Hz Band")
     ax_rt60.set_title("RT60 Decibel Graphs")
     ax_rt60.set_xlabel("Time (s)")
     ax_rt60.set_ylabel("Power (dB)")
-
-
     if ifGraphed == 0:
         resonant_frequency_var = resonant_frequency(data, sample_rate)
         _summary.set(f'Total duration of wave in sec: {t} s\n'
                      f'Resonant frequency: {resonant_frequency_var}\n'
                      f'')
-
-
 
         return rt60, target_frequency, resonant_frequency_var, t, ax_rt60
 
