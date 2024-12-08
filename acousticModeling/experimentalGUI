@@ -100,14 +100,15 @@ def readTheFile(filename):
     _summary.set('')
     add_log_entry(f'File: {filename}')
     add_log_entry(f'Sample rate: {sample_rate} Hz')
-    add_log_entry(f'Total duration of wave in sec: {t} s')
+    length = data.shape[0] / sample_rate
+    add_log_entry(f'Total duration of wave in sec: {length} s')
     add_log_entry(f'Resonant frequency: {resonant_freq} Hz')
     add_log_entry(f"RT60 (Low Freq): {round(abs(rt60_low), 2)} seconds at {int(target_frequency_low)} Hz")
     add_log_entry(f"RT60 (Mid Freq): {round(abs(rt60_mid), 2)} seconds at {int(target_frequency_mid)} Hz")
     add_log_entry(f"RT60 (High Freq): {round(abs(rt60_high), 2)} seconds at {int(target_frequency_high)} Hz")
     rt60_avg = (rt60_low + rt60_mid + rt60_high) / 3
-        rt60_avg_diff = rt60_avg - 0.5
-        add_log_entry(f"RT60 Difference: {round(abs(rt60_avg_diff), 2)} seconds")
+    rt60_avg_diff = rt60_avg - 0.5
+    add_log_entry(f"RT60 Difference: {round(abs(rt60_avg_diff), 2)} seconds")
 
 def splitChannelsAndCombine(data, sample_rate, ifGraphed):
     # Check if the audio has 2 channels
@@ -337,10 +338,6 @@ if __name__ == "__main__":  # execute logic if run directly
         _analysis_frame, listvariable=_summary, height=6, width=50)
     _analysis_listbox.grid(row=0, column=0, sticky=(E, W), pady=5)
 
-    # Graphs!
-
-
-    # SCROLLBAR, DELETE at the end if it's redundant
     _scrollbar = ttk.Scrollbar(
         _analysis_frame, orient=VERTICAL, command=_analysis_listbox.yview)
     _scrollbar.grid(row=0, column=1, sticky=(S, N), pady=6)
